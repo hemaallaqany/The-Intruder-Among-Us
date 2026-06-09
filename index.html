@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الإمبوستر - النسخة المتقدمة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a12;
+    --surface: #13131f;
+    --surface2: #1c1c2e;
+    --border: #2a2a40;
+    --accent: #e63946;
+    --accent2: #ff6b6b;
+    --gold: #ffd166;
+    --teal: #06d6a0;
+    --purple: #7b2d8b;
+    --text: #f0f0f8;
+    --muted: #8888a8;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at 20% 20%, rgba(230,57,70,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(6,214,160,0.06) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .app {
+    width: 100%;
+    max-width: 480px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+  }
+  .screen {
+    display: none;
+    width: 100%;
+    animation: fadeIn 0.35s ease;
+  }
+  .screen.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    box-shadow: var(--shadow);
+  }
+
+  /* ── TYPOGRAPHY ── */
+  .game-title {
+    font-size: 3.2rem;
+    font-weight: 900;
+    letter-spacing: -1px;
+    line-height: 1;
+    margin-bottom: 6px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .game-subtitle {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 36px;
+  }
+  h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 20px; }
+  h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 12px; }
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  .section-title span { font-size: 1.4rem; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 14px 20px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'Cairo', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+    text-align: center;
+    letter-spacing: 0.3px;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), #c1121f);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(230,57,70,0.35);
+  }
+  .btn-primary:hover { box-shadow: 0 6px 28px rgba(230,57,70,0.5); transform: translateY(-1px); }
+  .btn-secondary {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); }
+  .btn-teal {
+    background: linear-gradient(135deg, var(--teal), #04b889);
+    color: #000;
+    box-shadow: 0 4px 20px rgba(6,214,160,0.3);
+  }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), #f4a700);
+    color: #000;
+    box-shadow: 0 4px 20px rgba(255,209,102,0.3);
+  }
+  .btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  .btn-sm {
+    width: auto;
+    display: inline-block;
+    padding: 7px 14px;
+    font-size: 0.85rem;
+  }
+  .btn-gap { margin-top: 10px; }
+  .btn-danger { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  .btn-danger:hover { background: rgba(230,57,70,0.1); }
+
+  /* ── INPUTS & SELECTS ── */
+  .input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  input[type="text"], select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.95rem;
+    padding: 11px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input[type="text"]:focus, select:focus { border-color: var(--accent); }
+  input[type="text"]::placeholder { color: var(--muted); }
+  select option { background: var(--surface2); color: var(--text); }
+
+  /* ── LISTS ── */
+  .player-list, .question-list { margin-bottom: 18px; display: flex; flex-direction: column; gap: 8px; }
+  .list-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.95rem;
+  }
+  .list-item-del {
+    background: none; border: none; color: var(--muted); cursor: pointer;
+    font-size: 1.1rem; line-height: 1; transition: color 0.15s; padding: 2px 6px;
+  }
+  .list-item-del:hover { color: var(--accent); }
+  .player-badge {
+    background: rgba(230,57,70,0.15);
+    color: var(--accent2);
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+
+  /* ── PASS SCREEN ── */
+  .pass-name {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--gold);
+    margin: 10px 0 24px;
+    text-align: center;
+  }
+  .pass-label { color: var(--muted); text-align: center; font-size: 1rem; margin-bottom: 6px; }
+
+  /* ── QUESTION REVEAL ── */
+  .question-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 20px;
+    text-align: center;
+    margin: 16px 0;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    position: relative;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .question-box.hidden-q { border-color: var(--accent); }
+  .question-box .blur-text {
+    font-size: 1.2rem;
+    font-weight: 700;
+    filter: blur(10px);
+    user-select: none;
+    transition: filter 0.3s;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .question-box.revealed .blur-text { filter: none; }
+  .tap-hint {
+    position: absolute;
+    bottom: 10px;
+    left: 50%; transform: translateX(-50%);
+    font-size: 0.78rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .question-box.revealed .tap-hint { display: none; }
+
+  /* ── DISCUSS SCREEN ── */
+  .big-emoji { font-size: 3.5rem; text-align: center; margin: 10px 0 16px; }
+  .instruction-box {
+    background: var(--surface2);
+    border-right: 4px solid var(--teal);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  .category-badge-title {
+    display: inline-block;
+    background: var(--purple);
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  /* ── REVEAL SCREEN ── */
+  .q-reveal-row {
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    border-right: 4px solid var(--border);
+  }
+  .q-reveal-row.normal { border-right-color: var(--teal); }
+  .q-reveal-row.imposter { border-right-color: var(--accent); }
+  .q-reveal-label { font-size: 0.78rem; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
+  .q-reveal-text { font-size: 1.05rem; font-weight: 700; }
+
+  /* ── VOTING ── */
+  .vote-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+  .vote-item {
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: border-color 0.2s, background 0.2s;
+    text-align: right;
+  }
+  .vote-item:hover { border-color: var(--accent); }
+  .vote-item.selected { border-color: var(--accent); background: rgba(230,57,70,0.15); color: var(--accent2); }
+
+  /* ── RESULTS ── */
+  .imposter-reveal {
+    text-align: center;
+    margin: 16px 0 22px;
+  }
+  .imposter-reveal .label { color: var(--muted); font-size: 0.9rem; margin-bottom: 4px; }
+  .imposter-reveal .name {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--accent2);
+  }
+  .outcome-box {
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  .outcome-success { background: rgba(6,214,160,0.15); color: var(--teal); border: 1px solid var(--teal); }
+  .outcome-fail    { background: rgba(230,57,70,0.15);  color: var(--accent2); border: 1px solid var(--accent); }
+
+  .scores-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+  .scores-table th, .scores-table td { padding: 9px 12px; text-align: right; font-size: 0.9rem; }
+  .scores-table th { color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+  .scores-table tr:not(:last-child) td { border-bottom: 1px solid rgba(42,42,64,0.5); }
+  .scores-table .top-score { color: var(--gold); font-weight: 700; }
+  .score-round { color: var(--teal); }
+  .score-total { color: var(--gold); font-weight: 700; }
+  .badge-imposter { background: rgba(230,57,70,0.2); color: var(--accent2); border-radius: 4px; padding: 1px 7px; font-size: 0.75rem; }
+
+  /* ── ADVANCED LIBRARY STYLES ── */
+  .category-container {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+  }
+  .category-title-text { font-weight: 700; color: var(--gold); font-size: 1.1rem; }
+  .empty-state { color: var(--muted); font-size: 0.9rem; text-align: center; padding: 20px; }
+  .q-pair-box {
+    background: rgba(255,255,255,0.02);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+  .q-pair-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .q-pair-texts { flex: 1; }
+  .q-pair-a { font-size: 0.82rem; color: var(--teal); margin-bottom: 3px; }
+  .q-pair-b { font-size: 0.82rem; color: var(--accent2); }
+  .q-pair-a span, .q-pair-b span { color: var(--text); font-weight: 600; }
+  .io-container {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  #import-file { display: none; }
+
+  @media (max-width: 360px) {
+    .game-title { font-size: 2.6rem; }
+    .card { padding: 22px 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div id="screen-menu" class="screen active">
+    <div class="card">
+      <div style="text-align:center; padding: 10px 0 4px;">
+        <div style="font-size:3rem; margin-bottom:8px;">🎭</div>
+        <div class="game-title">الإمبوستر</div>
+        <div class="game-subtitle">من فيكم يختبئ بيننا؟</div>
+      </div>
+      <button class="btn btn-primary" onclick="showScreen('screen-players')">بدء اللعبة</button>
+      <button class="btn btn-secondary btn-gap" onclick="showScreen('screen-library')">📚 مكتبة الفئات والأسئلة</button>
+    </div>
+  </div>
+
+  <div id="screen-library" class="screen">
+    <div class="card">
+      <button class="btn btn-secondary btn-sm back-btn" onclick="showScreen('screen-menu')">← رجوع</button>
+      <div class="section-title"><span>📚</span> فئات اللعبة</div>
+
+      <div class="io-container">
+        <button class="btn btn-secondary btn-sm" style="flex: 1;" onclick="exportLibrary()">📥 تصدير المكتبة</button>
+        <button class="btn btn-secondary btn-sm" style="flex: 1;" onclick="document.getElementById('import-file').click()">📤 استيراد مكتبة</button>
+        <input type="file" id="import-file" accept=".json" onchange="importLibrary(event)">
+      </div>
+
+      <div id="lib-list"></div>
+
+      <hr class="divider">
+      
+      <h3>📁 إضافة فئة جديدة</h3>
+      <div class="input-row">
+        <input type="text" id="new-cat-name" placeholder="اسم الفئة الجديدة (مثال: مسلسلات وأفلام)">
+        <button class="btn btn-gold btn-sm" style="width: auto;" onclick="addCategory()">إضافة فئة</button>
+      </div>
+
+      <hr class="divider">
+
+      <h3>➕ إضافة زوج أسئلة لفئة</h3>
+      <div style="margin-bottom:8px;">
+        <div style="font-size:0.78rem; color:var(--gold); margin-bottom:4px;">اختر الفئة المستهدفة</div>
+        <select id="select-cat"></select>
+      </div>
+      <div style="margin-bottom:8px;">
+        <div style="font-size:0.78rem; color:var(--teal); margin-bottom:4px;">سؤال اللاعبين العاديين (أ)</div>
+        <input type="text" id="new-qa" placeholder="مثال: شخصية غنية">
+      </div>
+      <div style="margin-bottom:14px;">
+        <div style="font-size:0.78rem; color:var(--accent2); margin-bottom:4px;">سؤال الإمبوستر (ب)</div>
+        <input type="text" id="new-qb" placeholder="مثال: شخصية فقيرة">
+      </div>
+      <button class="btn btn-teal" onclick="addQuestion()">إضافة السؤال</button>
+    </div>
+  </div>
+
+  <div id="screen-players" class="screen">
+    <div class="card">
+      <button class="btn btn-secondary btn-sm back-btn" onclick="showScreen('screen-menu')">← رجوع</button>
+      <div class="section-title"><span>👥</span> اللاعبون</div>
+
+      <div class="input-row">
+        <input type="text" id="player-input" placeholder="اسم اللاعب..." onkeydown="if(event.key==='Enter')addPlayer()">
+        <button class="btn btn-primary btn-sm" onclick="addPlayer()">إضافة</button>
+      </div>
+      <div id="player-list" class="player-list"></div>
+      <div style="color:var(--muted); font-size:0.82rem; margin-bottom:16px;">الحد الأدنى: 4 لاعبين — لديك <span id="player-count" style="color:var(--gold); font-weight:700;">0</span></div>
+      <button id="start-btn" class="btn btn-primary" onclick="startGame()" disabled>🎮 ابدأ اللعبة!</button>
+    </div>
+  </div>
+
+  <div id="screen-pass" class="screen">
+    <div class="card" style="text-align:center;">
+      <div style="font-size:2.5rem; margin-bottom:8px;">📱</div>
+      <div class="pass-label">أعطِ الهاتف لـ</div>
+      <div class="pass-name" id="pass-name">—</div>
+      <button class="btn btn-primary" onclick="onReady()">جاهز ✓</button>
+    </div>
+  </div>
+
+  <div id="screen-question" class="screen">
+    <div class="card">
+      <div style="text-align:center; color:var(--muted); font-size:0.9rem; margin-bottom:4px;">سؤالك السري 🤫</div>
+      <div class="question-box hidden-q" id="q-box" onclick="revealQuestion()">
+        <div class="blur-text" id="q-text">—</div>
+        <div class="tap-hint">اضغط للكشف عن سؤالك</div>
+      </div>
+      <button class="btn btn-secondary" id="q-next-btn" onclick="nextAfterQuestion()" style="margin-top:8px; display:none;">التالي ←</button>
+    </div>
+  </div>
+
+  <div id="screen-discuss" class="screen">
+    <div class="card">
+      <div class="big-emoji">🗣️</div>
+      <div style="text-align: center;"><span class="category-badge-title" id="discuss-cat-badge">الفئة: —</span></div>
+      <h2 style="text-align:center;">قولوا إجاباتكم!</h2>
+      <div class="instruction-box">
+        كل لاعب يذكر إجابته بناءً على فئة الجولة وسؤاله السري الموجه له.<br>
+        <strong style="color:var(--text);">انتبه!</strong> لا تكشف عن سؤالك الحرفي — فقط اذكر إجابتك بحذر.
+      </div>
+      <button class="btn btn-primary" onclick="showReveal()">كشف الأسئلة ←</button>
+    </div>
+  </div>
+
+  <div id="screen-reveal" class="screen">
+    <div class="card">
+      <div class="big-emoji">🎭</div>
+      <h2 style="text-align:center;">الأسئلة كانت...</h2>
+      <div class="q-reveal-row normal">
+        <div class="q-reveal-label">📗 سؤال اللاعبين العاديين</div>
+        <div class="q-reveal-text" id="reveal-qa">—</div>
+      </div>
+      <div class="q-reveal-row imposter">
+        <div class="q-reveal-label">🔴 سؤال الإمبوستر</div>
+        <div class="q-reveal-text" id="reveal-qb">—</div>
+      </div>
+      <div class="instruction-box" style="margin-top:16px; border-right-color:var(--accent);">
+        تناقشوا الآن ومن بعد سيصوت كل لاعب سراً على من يظن أنه الإمبوستر الذي لا ينتمي لهذه الفئة!
+      </div>
+      <button class="btn btn-primary" onclick="startVoting()">🗳️ بدء التصويت</button>
+    </div>
+  </div>
+
+  <div id="screen-vote-pass" class="screen">
+    <div class="card" style="text-align:center;">
+      <div style="font-size:2rem; margin-bottom:8px;">🗳️</div>
+      <div class="pass-label">دور التصويت السري لـ</div>
+      <div class="pass-name" id="vote-pass-name">—</div>
+      <button class="btn btn-primary" onclick="showVoteScreen()">جاهز للتصويت ✓</button>
+    </div>
+  </div>
+
+  <div id="screen-vote" class="screen">
+    <div class="card">
+      <div style="text-align:center; color:var(--muted); font-size:0.88rem; margin-bottom:14px;">من هو الإمبوستر برأيك؟ 🤔</div>
+      <div class="vote-list" id="vote-list"></div>
+      <button class="btn btn-primary" id="vote-confirm-btn" onclick="confirmVote()" disabled>تأكيد التصويت ✓</button>
+    </div>
+  </div>
+
+  <div id="screen-results" class="screen">
+    <div class="card">
+      <div class="big-emoji" id="result-emoji">🎉</div>
+      <h2 style="text-align:center; margin-bottom:6px;">النتائج</h2>
+      <div class="imposter-reveal">
+        <div class="label">الإمبوستر كان...</div>
+        <div class="name" id="result-imposter">—</div>
+      </div>
+      <div id="outcome-box" class="outcome-box"></div>
+      <table class="scores-table">
+        <thead><tr><th>اللاعب</th><th>هذه الجولة</th><th>المجموع</th></tr></thead>
+        <tbody id="scores-body"></tbody>
+      </table>
+      <button class="btn btn-teal" onclick="newRound()">🔄 جولة جديدة</button>
+      <button class="btn btn-secondary btn-gap" onclick="newGame()">🏠 لعبة جديدة</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ══ STATE (STRUCTURED BY CATEGORIES NOW) ══
+const defaultCategories = [
+  {
+    name: "أنمي وكرتون",
+    pairs: [
+      { a: "شخصية غنية من أنمي أو مسلسل", b: "شخصية فقيرة من أنمي أو مسلسل" },
+      { a: "شخصية ذكية جداً من كرتون", b: "شخصية غبية مضحكة من كرتون" }
+    ]
+  },
+  {
+    name: "أفلام وقصص خيالية",
+    pairs: [
+      { a: "شخصية شريرة مشهورة من فيلم", b: "شخصية بطولية مشهورة من فيلم" },
+      { a: "شخصية تحب الطعام كثيراً في قصة خيالية", b: "شخصية تكره الطعام في قصة خيالية" }
+    ]
+  },
+  {
+    name: "أسلوب حياة وعادات",
+    pairs: [
+      { a: "شخصية لا تنام وتعمل دائماً", b: "شخصية كسولة تنام طوال الوقت" },
+      { a: "شخصية تعيش في مدينة مستقبلية", b: "شخصية تعيش في قرية قديمة" }
+    ]
+  }
+];
+
+let state = {
+  categories: JSON.parse(localStorage.getItem('imp_categories_v2') || 'null') || defaultCategories,
+  players: [],
+  scores: {},
+  // round state
+  imposterIdx: -1,
+  currentCategoryName: "",
+  currentQPair: null,
+  passOrder: [],
+  passIdx: 0,
+  voteOrder: [],
+  voteIdx: 0,
+  votes: {}, 
+  currentVoteSelection: null,
+};
+
+function saveLibrary() {
+  localStorage.setItem('imp_categories_v2', JSON.stringify(state.categories));
+}
+
+// ══ SCREEN NAVIGATION ══
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (id === 'screen-library') renderLibrary();
+  if (id === 'screen-players') renderPlayerList();
+}
+
+// ══ NEW ADVANCED LIBRARY LOGIC ══
+function renderLibrary() {
+  const el = document.getElementById('lib-list');
+  const select = document.getElementById('select-cat');
+  
+  if (!state.categories.length) { 
+    el.innerHTML = '<div class="empty-state">المكتبة فارغة حالياً. أضف فئة جديدة بالأسفل!</div>'; 
+    select.innerHTML = '<option value="">لا توجد فئات متاحة</option>';
+    return; 
+  }
+  
+  // Render Categories & Questions
+  el.innerHTML = state.categories.map((cat, catIdx) => `
+    <div class="category-container">
+      <div class="category-header">
+        <div class="category-title-text">📁 ${esc(cat.name)} (${cat.pairs.length} سؤال)</div>
+        <button class="btn-danger btn-sm btn" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteCategory(${catIdx})">حذف الفئة ✕</button>
+      </div>
+      <div class="question-list">
+        ${cat.pairs.length === 0 ? '<div class="empty-state" style="padding:5px;">لا توجد أسئلة بهذه الفئة بعد</div>' : 
+          cat.pairs.map((q, qIdx) => `
+            <div class="q-pair-box">
+              <div class="q-pair-header">
+                <div class="q-pair-texts">
+                  <div class="q-pair-a">📗 عاديون: <span>${esc(q.a)}</span></div>
+                  <div class="q-pair-b">🔴 إمبوستر: <span>${esc(q.b)}</span></div>
+                </div>
+                <button class="list-item-del" onclick="deleteQuestion(${catIdx}, ${qIdx})" title="حذف السؤال">✕</button>
+              </div>
+            </div>
+          `).join('')
+        }
+      </div>
+    </div>
+  `).join('');
+
+  // Update Select Dropdown
+  select.innerHTML = state.categories.map((cat, idx) => `<option value="${idx}">${esc(cat.name)}</option>`).join('');
+}
+
+function addCategory() {
+  const nameInp = document.getElementById('new-cat-name');
+  const name = nameInp.value.trim();
+  if (!name) { alert('يرجى كتابة اسم الفئة أولاً!'); return; }
+  
+  if (state.categories.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+    alert('هذه الفئة موجودة بالفعل!');
+    return;
+  }
+  
+  state.categories.push({ name: name, pairs: [] });
+  saveLibrary();
+  nameInp.value = '';
+  renderLibrary();
+}
+
+function deleteCategory(catIdx) {
+  if (confirm(`هل أنت متأكد من حذف فئة "${state.categories[catIdx].name}" بجميع أسئلتها؟`)) {
+    state.categories.splice(catIdx, 1);
+    saveLibrary();
+    renderLibrary();
+  }
+}
+
+function addQuestion() {
+  const catIdx = document.getElementById('select-cat').value;
+  const a = document.getElementById('new-qa').value.trim();
+  const b = document.getElementById('new-qb').value.trim();
+  
+  if (catIdx === "" || catIdx === null) { alert('يرجى إنشاء فئة أولاً واختيارها!'); return; }
+  if (!a || !b) { alert('يرجى ملء كلا السؤالين (عاديين وإمبوستر)!'); return; }
+  
+  state.categories[catIdx].pairs.push({ a, b });
+  saveLibrary();
+  
+  document.getElementById('new-qa').value = '';
+  document.getElementById('new-qb').value = '';
+  renderLibrary();
+}
+
+function deleteQuestion(catIdx, qIdx) {
+  state.categories[catIdx].pairs.splice(qIdx, 1);
+  saveLibrary();
+  renderLibrary();
+}
+
+// ══ IMPORT / EXPORT FUNCTIONS ══
+function exportLibrary() {
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state.categories, null, 2));
+  const downloadAnchor = document.createElement('a');
+  downloadAnchor.setAttribute("href", dataStr);
+  downloadAnchor.setAttribute("download", "imposter_questions_library.json");
+  document.body.appendChild(downloadAnchor);
+  downloadAnchor.click();
+  downloadAnchor.remove();
+}
+
+function importLibrary(event) {
+  const input = event.target;
+  if (!input.files.length) return;
+  
+  const reader = new FileReader();
+  reader.onload = function() {
+    try {
+      const importedData = JSON.parse(reader.result);
+      
+      // Validation check for array structure
+      if (!Array.isArray(importedData) || (importedData.length > 0 && (!importedData[0].name || !Array.isArray(importedData[0].pairs)))) {
+        throw new Error("بنية الملف غير متوافقة مع نظام الفئات الجديد.");
+      }
+      
+      if (confirm('تنبيه: الاستيراد سيستبدل جميع الفئات والأسئلة الحالية. هل تود المتابعة؟')) {
+        state.categories = importedData;
+        saveLibrary();
+        renderLibrary();
+        alert('تم استيراد المكتبة بنجاح!');
+      }
+    } catch (e) {
+      alert('خطأ في قراءة وتوافق الملف: ' + e.message);
+    }
+  };
+  reader.readAsText(input.files[0]);
+  input.value = ''; // Reset input element
+}
+
+// ══ PLAYERS ══
+function renderPlayerList() {
+  const el = document.getElementById('player-list');
+  if (!state.players.length) { el.innerHTML = '<div class="empty-state">لم تُضف لاعبين بعد...</div>'; }
+  else el.innerHTML = state.players.map((p, i) => `
+    <div class="list-item">
+      <span>${esc(p)}</span>
+      <button class="list-item-del" onclick="removePlayer(${i})">✕</button>
+    </div>`).join('');
+  document.getElementById('player-count').textContent = state.players.length;
+  document.getElementById('start-btn').disabled = state.players.length < 4;
+}
+function addPlayer() {
+  const inp = document.getElementById('player-input');
+  const name = inp.value.trim();
+  if (!name) return;
+  if (state.players.includes(name)) { alert('هذا الاسم موجود بالفعل!'); return; }
+  state.players.push(name);
+  inp.value = '';
+  inp.focus();
+  renderPlayerList();
+}
+function removePlayer(i) {
+  state.players.splice(i, 1);
+  renderPlayerList();
+}
+
+// ══ GAME START ══
+function startGame() {
+  // Check if we have active questions to avoid crash
+  const validCategories = state.categories.filter(c => c.pairs.length > 0);
+  if (validCategories.length === 0) {
+    alert('تنبيه: لا توجد فئات تحتوي على أسئلة! اذهب لمكتبة الأسئلة وأضف أسئلة أولاً لتتمكن من اللعب.');
+    return;
+  }
+
+  state.players.forEach(p => { if (!(p in state.scores)) state.scores[p] = 0; });
+  startRound();
+}
+
+function startRound() {
+  const n = state.players.length;
+  state.imposterIdx = Math.floor(Math.random() * n);
+  
+  // Pick a random category that has questions
+  const validCategories = state.categories.filter(c => c.pairs.length > 0);
+  const selectedCat = validCategories[Math.floor(Math.random() * validCategories.length)];
+  
+  state.currentCategoryName = selectedCat.name;
+  state.currentQPair = selectedCat.pairs[Math.floor(Math.random() * selectedCat.pairs.length)];
+  
+  // shuffle pass order
+  state.passOrder = shuffle([...Array(n).keys()]);
+  state.passIdx = 0;
+  state.votes = {};
+  showPassScreen();
+}
+
+function showPassScreen() {
+  const idx = state.passOrder[state.passIdx];
+  document.getElementById('pass-name').textContent = state.players[idx];
+  showScreen('screen-pass');
+}
+
+function onReady() {
+  const idx = state.passOrder[state.passIdx];
+  const isImposter = idx === state.imposterIdx;
+  const q = isImposter ? state.currentQPair.b : state.currentQPair.a;
+  const qBox = document.getElementById('q-box');
+  qBox.classList.remove('revealed');
+  qBox.classList.add('hidden-q');
+  document.getElementById('q-text').textContent = q;
+  document.getElementById('q-next-btn').style.display = 'none';
+  showScreen('screen-question');
+}
+function revealQuestion() {
+  const qBox = document.getElementById('q-box');
+  qBox.classList.add('revealed');
+  qBox.classList.remove('hidden-q');
+  document.getElementById('q-next-btn').style.display = 'block';
+}
+function nextAfterQuestion() {
+  state.passIdx++;
+  if (state.passIdx < state.passOrder.length) {
+    showPassScreen();
+  } else {
+    document.getElementById('discuss-cat-badge').textContent = "الفئة الحالية: " + state.currentCategoryName;
+    showScreen('screen-discuss');
+  }
+}
+
+// ══ DISCUSS → REVEAL ══
+function showReveal() {
+  document.getElementById('reveal-qa').textContent = state.currentQPair.a;
+  document.getElementById('reveal-qb').textContent = state.currentQPair.b;
+  showScreen('screen-reveal');
+}
+
+// ══ VOTING ══
+function startVoting() {
+  state.voteOrder = shuffle([...Array(state.players.length).keys()]);
+  state.voteIdx = 0;
+  state.currentVoteSelection = null;
+  showVotePass();
+}
+function showVotePass() {
+  const idx = state.voteOrder[state.voteIdx];
+  document.getElementById('vote-pass-name').textContent = state.players[idx];
+  showScreen('screen-vote-pass');
+}
+function showVoteScreen() {
+  const voterIdx = state.voteOrder[state.voteIdx];
+  const voterName = state.players[voterIdx];
+  state.currentVoteSelection = null;
+  const vl = document.getElementById('vote-list');
+  vl.innerHTML = state.players
+    .filter(p => p !== voterName)
+    .map(p => `<div class="vote-item" onclick="selectVote(this,'${esc(p)}')">${esc(p)}</div>`)
+    .join('');
+  document.getElementById('vote-confirm-btn').disabled = true;
+  showScreen('screen-vote');
+}
+function selectVote(el, name) {
+  document.querySelectorAll('.vote-item').forEach(v => v.classList.remove('selected'));
+  el.classList.add('selected');
+  state.currentVoteSelection = name;
+  document.getElementById('vote-confirm-btn').disabled = false;
+}
+function confirmVote() {
+  const voterIdx = state.voteOrder[state.voteIdx];
+  const voterName = state.players[voterIdx];
+  state.votes[voterName] = state.currentVoteSelection;
+  state.voteIdx++;
+  if (state.voteIdx < state.voteOrder.length) {
+    showVotePass();
+  } else {
+    calcResults();
+  }
+}
+
+// ══ RESULTS ══
+function calcResults() {
+  const n = state.players.length;
+  const imposterName = state.players[state.imposterIdx];
+  let V = 0;
+  state.players.forEach(p => { if (p !== imposterName && state.votes[p] === imposterName) V++; });
+  const roundScores = {};
+  state.players.forEach(p => roundScores[p] = 0);
+  const success = V >= n / 2;
+  if (success) {
+    state.players.forEach(p => {
+      if (p === imposterName) roundScores[p] = 0;
+      else if (state.votes[p] === imposterName) roundScores[p] = V;
+      else roundScores[p] = 1;
+    });
+  } else {
+    const incorrectVotes = (n - 1) - V;
+    roundScores[imposterName] = incorrectVotes;
+  }
+  state.players.forEach(p => state.scores[p] = (state.scores[p] || 0) + roundScores[p]);
+
+  document.getElementById('result-imposter').textContent = imposterName;
+  const outBox = document.getElementById('outcome-box');
+  if (success) {
+    document.getElementById('result-emoji').textContent = '🎉';
+    outBox.className = 'outcome-box outcome-success';
+    outBox.textContent = `✅ نجح الفريق! صوّت ${V} لاعب بشكل صحيح.`;
+  } else {
+    document.getElementById('result-emoji').textContent = '😈';
+    outBox.className = 'outcome-box outcome-fail';
+    outBox.textContent = `❌ فاز الإمبوستر! لم يحصّل الفريق أغلبية الأصوات.`;
+  }
+  
+  const sorted = [...state.players].sort((a,b) => state.scores[b] - state.scores[a]);
+  const tbody = document.getElementById('scores-body');
+  tbody.innerHTML = sorted.map(p => {
+    const isImp = p === imposterName;
+    return `<tr>
+      <td>${esc(p)} ${isImp ? '<span class="badge-imposter">إمبوستر</span>' : ''}</td>
+      <td class="score-round">+${roundScores[p]}</td>
+      <td class="score-total">${state.scores[p]}</td>
+    </tr>`;
+  }).join('');
+  showScreen('screen-results');
+}
+
+function newRound() {
+  startRound();
+}
+function newGame() {
+  state.scores = {};
+  state.players = [];
+  showScreen('screen-menu');
+}
+
+// ══ UTILS ══
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
