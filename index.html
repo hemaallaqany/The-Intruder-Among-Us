@@ -161,7 +161,7 @@
     margin-bottom: 14px;
   }
   input[type="text"], select {
-    width: 100%;
+    flex: 1;
     background: var(--surface2);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
@@ -174,10 +174,10 @@
   }
   input[type="text"]:focus, select:focus { border-color: var(--accent); }
   input[type="text"]::placeholder { color: var(--muted); }
-  select option { background: var(--surface2); color: var(--text); }
+  select { appearance: none; cursor: pointer; }
 
   /* ── LISTS ── */
-  .player-list, .question-list { margin-bottom: 18px; display: flex; flex-direction: column; gap: 8px; }
+  .player-list { margin-bottom: 18px; display: flex; flex-direction: column; gap: 8px; }
   .list-item {
     background: var(--surface2);
     border: 1px solid var(--border);
@@ -193,14 +193,6 @@
     font-size: 1.1rem; line-height: 1; transition: color 0.15s; padding: 2px 6px;
   }
   .list-item-del:hover { color: var(--accent); }
-  .player-badge {
-    background: rgba(230,57,70,0.15);
-    color: var(--accent2);
-    border-radius: 6px;
-    padding: 2px 8px;
-    font-size: 0.8rem;
-    font-weight: 700;
-  }
 
   /* ── DIVIDER ── */
   .divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
@@ -264,16 +256,6 @@
     color: var(--muted);
     margin-bottom: 20px;
   }
-  .category-badge-title {
-    display: inline-block;
-    background: var(--purple);
-    color: #fff;
-    padding: 2px 10px;
-    border-radius: 30px;
-    font-size: 0.85rem;
-    margin-bottom: 10px;
-    font-weight: 600;
-  }
 
   /* ── REVEAL SCREEN ── */
   .q-reveal-row {
@@ -333,49 +315,47 @@
   .scores-table .top-score { color: var(--gold); font-weight: 700; }
   .score-round { color: var(--teal); }
   .score-total { color: var(--gold); font-weight: 700; }
-  .badge-imposter { background: rgba(230,57,70,0.2); color: var(--accent2); border-radius: 4px; padding: 1px 7px; font-size: 0.75rem; }
+  .badge-imposter { background: rgba(230,57,70,0.2); color: var(--accent2); border-radius: 4px; padding: 1px 7px; font-size: 0.75sem; }
 
-  /* ── ADVANCED LIBRARY STYLES ── */
-  .category-container {
+  /* ── NEW CATEGORY DESIGN ── */
+  .category-box {
     background: var(--surface2);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-    margin-bottom: 16px;
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    margin-bottom: 12px;
   }
   .category-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 8px;
-  }
-  .category-title-text { font-weight: 700; color: var(--gold); font-size: 1.1rem; }
-  .empty-state { color: var(--muted); font-size: 0.9rem; text-align: center; padding: 20px; }
-  .q-pair-box {
-    background: rgba(255,255,255,0.02);
-    border: 1px dashed var(--border);
-    border-radius: var(--radius-sm);
-    padding: 10px 12px;
+    font-weight: 700;
+    color: var(--gold);
     margin-bottom: 8px;
+    font-size: 1.05rem;
   }
-  .q-pair-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-  .q-pair-texts { flex: 1; }
-  .q-pair-a { font-size: 0.82rem; color: var(--teal); margin-bottom: 3px; }
-  .q-pair-b { font-size: 0.82rem; color: var(--accent2); }
-  .q-pair-a span, .q-pair-b span { color: var(--text); font-weight: 600; }
-  .io-container {
+  .category-questions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 6px;
+    padding-right: 8px;
+    border-right: 2px solid var(--border);
+  }
+  .q-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.88rem;
+    color: var(--text);
+  }
+  .empty-state { color: var(--muted); font-size: 0.9rem; text-align: center; padding: 20px; }
+  .import-export-row {
     display: flex;
     gap: 8px;
     margin-bottom: 16px;
   }
   #import-file { display: none; }
-
-  @media (max-width: 360px) {
-    .game-title { font-size: 2.6rem; }
-    .card { padding: 22px 16px; }
-  }
 </style>
 </head>
 <body>
@@ -396,9 +376,9 @@
   <div id="screen-library" class="screen">
     <div class="card">
       <button class="btn btn-secondary btn-sm back-btn" onclick="showScreen('screen-menu')">← رجوع</button>
-      <div class="section-title"><span>📚</span> فئات اللعبة</div>
+      <div class="section-title"><span>📚</span> مكتبة الفئات</div>
 
-      <div class="io-container">
+      <div class="import-export-row">
         <button class="btn btn-secondary btn-sm" style="flex: 1;" onclick="exportLibrary()">📥 تصدير المكتبة</button>
         <button class="btn btn-secondary btn-sm" style="flex: 1;" onclick="document.getElementById('import-file').click()">📤 استيراد مكتبة</button>
         <input type="file" id="import-file" accept=".json" onchange="importLibrary(event)">
@@ -410,26 +390,18 @@
       
       <h3>📁 إضافة فئة جديدة</h3>
       <div class="input-row">
-        <input type="text" id="new-cat-name" placeholder="اسم الفئة الجديدة (مثال: مسلسلات وأفلام)">
-        <button class="btn btn-gold btn-sm" style="width: auto;" onclick="addCategory()">إضافة فئة</button>
+        <input type="text" id="new-category-name" placeholder="مثال: مسلسلات وأفلام">
+        <button class="btn btn-gold btn-sm" onclick="addCategory()">إنشاء فئة</button>
       </div>
 
-      <hr class="divider">
-
-      <h3>➕ إضافة زوج أسئلة لفئة</h3>
+      <h3 style="margin-top: 14px;">➕ إضافة سؤال لفئة</h3>
       <div style="margin-bottom:8px;">
-        <div style="font-size:0.78rem; color:var(--gold); margin-bottom:4px;">اختر الفئة المستهدفة</div>
-        <select id="select-cat"></select>
+        <select id="select-category-target"></select>
       </div>
-      <div style="margin-bottom:8px;">
-        <div style="font-size:0.78rem; color:var(--teal); margin-bottom:4px;">سؤال اللاعبين العاديين (أ)</div>
-        <input type="text" id="new-qa" placeholder="مثال: شخصية غنية">
+      <div class="input-row">
+        <input type="text" id="new-question-text" placeholder="مثال: شخصية غنية جداً">
+        <button class="btn btn-teal btn-sm" onclick="addQuestionToCategory()">إضافة السؤال</button>
       </div>
-      <div style="margin-bottom:14px;">
-        <div style="font-size:0.78rem; color:var(--accent2); margin-bottom:4px;">سؤال الإمبوستر (ب)</div>
-        <input type="text" id="new-qb" placeholder="مثال: شخصية فقيرة">
-      </div>
-      <button class="btn btn-teal" onclick="addQuestion()">إضافة السؤال</button>
     </div>
   </div>
 
@@ -460,6 +432,7 @@
   <div id="screen-question" class="screen">
     <div class="card">
       <div style="text-align:center; color:var(--muted); font-size:0.9rem; margin-bottom:4px;">سؤالك السري 🤫</div>
+      <div style="text-align:center; font-size:0.8rem; color:var(--gold); margin-bottom:10px;">الفئة الحالية: <span id="current-cat-display">—</span></div>
       <div class="question-box hidden-q" id="q-box" onclick="revealQuestion()">
         <div class="blur-text" id="q-text">—</div>
         <div class="tap-hint">اضغط للكشف عن سؤالك</div>
@@ -471,11 +444,10 @@
   <div id="screen-discuss" class="screen">
     <div class="card">
       <div class="big-emoji">🗣️</div>
-      <div style="text-align: center;"><span class="category-badge-title" id="discuss-cat-badge">الفئة: —</span></div>
       <h2 style="text-align:center;">قولوا إجاباتكم!</h2>
       <div class="instruction-box">
-        كل لاعب يذكر إجابته بناءً على فئة الجولة وسؤاله السري الموجه له.<br>
-        <strong style="color:var(--text);">انتبه!</strong> لا تكشف عن سؤالك الحرفي — فقط اذكر إجابتك بحذر.
+        كل لاعب يذكر إجابته بناءً على السؤال السري الموجه له من فئة (<strong id="discuss-cat-display" style="color:var(--gold);"></strong>).<br>
+        <strong style="color:var(--text);">انتبه!</strong> لا تكشف عن سؤالك الحرفي — فقط اذكر إجابتك الذكية.
       </div>
       <button class="btn btn-primary" onclick="showReveal()">كشف الأسئلة ←</button>
     </div>
@@ -494,7 +466,7 @@
         <div class="q-reveal-text" id="reveal-qb">—</div>
       </div>
       <div class="instruction-box" style="margin-top:16px; border-right-color:var(--accent);">
-        تناقشوا الآن ومن بعد سيصوت كل لاعب سراً على من يظن أنه الإمبوستر الذي لا ينتمي لهذه الفئة!
+        تناقشوا الآن ومن بعد سيصوت كل لاعب سراً على من يظن أنه الإمبوستر!
       </div>
       <button class="btn btn-primary" onclick="startVoting()">🗳️ بدء التصويت</button>
     </div>
@@ -538,39 +510,48 @@
 </div>
 
 <script>
-// ══ STATE (STRUCTURED BY CATEGORIES NOW) ══
-const defaultCategories = [
+// ══ STATE (هيكلية البيانات الجديدة بنظام الفئات) ══
+const defaultLibrary = [
   {
-    name: "أنمي وكرتون",
-    pairs: [
-      { a: "شخصية غنية من أنمي أو مسلسل", b: "شخصية فقيرة من أنمي أو مسلسل" },
-      { a: "شخصية ذكية جداً من كرتون", b: "شخصية غبية مضحكة من كرتون" }
+    category: "أنمي وكرتون",
+    questions: [
+      "شخصية غنية جداً وتمتلك نفوذ",
+      "شخصية فقيرة وتكافح من أجل لقمة العيش",
+      "شخصية ذكية جداً وتخطط بعبقرية",
+      "شخصية غبية ومضحكة وتسبب المشاكل",
+      "شخصية تمتلك قوة خارقة مدمرة",
+      "شخصية عادية لا تملك أي قوة وتعتمد على أدواتها"
     ]
   },
   {
-    name: "أفلام وقصص خيالية",
-    pairs: [
-      { a: "شخصية شريرة مشهورة من فيلم", b: "شخصية بطولية مشهورة من فيلم" },
-      { a: "شخصية تحب الطعام كثيراً في قصة خيالية", b: "شخصية تكره الطعام في قصة خيالية" }
+    category: "أفلام ومسلسلات",
+    questions: [
+      "شخصية شريرة مرعبة والجميع يخافها",
+      "شخصية بطولية تضحي من أجل الآخرين",
+      "شخصية غامضة لا تتحدث كثيراً",
+      "شخصية ثرثارة وكوميدية طوال الوقت"
     ]
   },
   {
-    name: "أسلوب حياة وعادات",
-    pairs: [
-      { a: "شخصية لا تنام وتعمل دائماً", b: "شخصية كسولة تنام طوال الوقت" },
-      { a: "شخصية تعيش في مدينة مستقبلية", b: "شخصية تعيش في قرية قديمة" }
+    category: "أسلوب حياة وعادات",
+    questions: [
+      "شخصية نشيطة جداً تستيقظ مبكراً وتعمل دائماً",
+      "شخصية كسولة جداً وتنام طوال اليوم وتكره العمل",
+      "شخصية تعشق تناول الطعام والحلويات بكثرة",
+      "شخصية تتبع نظاماً غذائياً صارماً وتكره الدهون"
     ]
   }
 ];
 
 let state = {
-  categories: JSON.parse(localStorage.getItem('imp_categories_v2') || 'null') || defaultCategories,
+  library: JSON.parse(localStorage.getItem('imp_categories_library')) || defaultLibrary,
   players: [],
   scores: {},
   // round state
   imposterIdx: -1,
   currentCategoryName: "",
-  currentQPair: null,
+  questionNormal: "",
+  questionImposter: "",
   passOrder: [],
   passIdx: 0,
   voteOrder: [],
@@ -580,7 +561,7 @@ let state = {
 };
 
 function saveLibrary() {
-  localStorage.setItem('imp_categories_v2', JSON.stringify(state.categories));
+  localStorage.setItem('imp_categories_library', JSON.stringify(state.library));
 }
 
 // ══ SCREEN NAVIGATION ══
@@ -591,35 +572,30 @@ function showScreen(id) {
   if (id === 'screen-players') renderPlayerList();
 }
 
-// ══ NEW ADVANCED LIBRARY LOGIC ══
+// ══ NEW LIBRARY MANAGEMENT ══
 function renderLibrary() {
   const el = document.getElementById('lib-list');
-  const select = document.getElementById('select-cat');
+  const selectTarget = document.getElementById('select-category-target');
   
-  if (!state.categories.length) { 
-    el.innerHTML = '<div class="empty-state">المكتبة فارغة حالياً. أضف فئة جديدة بالأسفل!</div>'; 
-    select.innerHTML = '<option value="">لا توجد فئات متاحة</option>';
+  if (!state.library.length) { 
+    el.innerHTML = '<div class="empty-state">المكتبة فارغة تماماً. قم بإنشاء فئة جديدة أدناه!</div>'; 
+    selectTarget.innerHTML = '<option value="">لا توجد فئات متاحة</option>';
     return; 
   }
   
-  // Render Categories & Questions
-  el.innerHTML = state.categories.map((cat, catIdx) => `
-    <div class="category-container">
+  // رندر الفئات والأسئلة بالداخل
+  el.innerHTML = state.library.map((cat, catIdx) => `
+    <div class="category-box">
       <div class="category-header">
-        <div class="category-title-text">📁 ${esc(cat.name)} (${cat.pairs.length} سؤال)</div>
-        <button class="btn-danger btn-sm btn" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteCategory(${catIdx})">حذف الفئة ✕</button>
+        <span>📁 ${esc(cat.category)} (${cat.questions.length} سؤال)</span>
+        <button class="list-item-del" onclick="deleteCategory(${catIdx})" title="حذف الفئة بالكامل">✕</button>
       </div>
-      <div class="question-list">
-        ${cat.pairs.length === 0 ? '<div class="empty-state" style="padding:5px;">لا توجد أسئلة بهذه الفئة بعد</div>' : 
-          cat.pairs.map((q, qIdx) => `
-            <div class="q-pair-box">
-              <div class="q-pair-header">
-                <div class="q-pair-texts">
-                  <div class="q-pair-a">📗 عاديون: <span>${esc(q.a)}</span></div>
-                  <div class="q-pair-b">🔴 إمبوستر: <span>${esc(q.b)}</span></div>
-                </div>
-                <button class="list-item-del" onclick="deleteQuestion(${catIdx}, ${qIdx})" title="حذف السؤال">✕</button>
-              </div>
+      <div class="category-questions-list">
+        ${cat.questions.length === 0 ? '<div style="color:var(--muted); font-size:0.8rem;">لا توجد أسئلة في هذه الفئة بعد.</div>' : 
+          cat.questions.map((q, qIdx) => `
+            <div class="q-item">
+              <span>• ${esc(q)}</span>
+              <button class="list-item-del" onclick="deleteQuestion(${catIdx}, ${qIdx})" style="font-size:0.8rem;">✕</button>
             </div>
           `).join('')
         }
@@ -627,93 +603,87 @@ function renderLibrary() {
     </div>
   `).join('');
 
-  // Update Select Dropdown
-  select.innerHTML = state.categories.map((cat, idx) => `<option value="${idx}">${esc(cat.name)}</option>`).join('');
+  // تحديث قائمة الخيارات المنسدلة (Dropdown) لإضافة أسئلة
+  selectTarget.innerHTML = state.library.map((cat, idx) => `
+    <option value="${idx}">${esc(cat.category)}</option>
+  `).join('');
 }
 
 function addCategory() {
-  const nameInp = document.getElementById('new-cat-name');
-  const name = nameInp.value.trim();
-  if (!name) { alert('يرجى كتابة اسم الفئة أولاً!'); return; }
+  const input = document.getElementById('new-category-name');
+  const name = input.value.trim();
+  if (!name) { alert('يرجى كتابة اسم الفئة!'); return; }
   
-  if (state.categories.some(c => c.name.toLowerCase() === name.toLowerCase())) {
-    alert('هذه الفئة موجودة بالفعل!');
-    return;
-  }
+  // التحقق من عدم التكرار
+  if (state.library.some(c => c.category === name)) { alert('هذه الفئة موجودة بالفعل!'); return; }
   
-  state.categories.push({ name: name, pairs: [] });
+  state.library.push({ category: name, questions: [] });
   saveLibrary();
-  nameInp.value = '';
+  input.value = '';
   renderLibrary();
 }
 
-function deleteCategory(catIdx) {
-  if (confirm(`هل أنت متأكد من حذف فئة "${state.categories[catIdx].name}" بجميع أسئلتها؟`)) {
-    state.categories.splice(catIdx, 1);
-    saveLibrary();
-    renderLibrary();
-  }
+function deleteCategory(idx) {
+  if (!confirm("هل أنت متأكد من حذف هذه الفئة وجميع الأسئلة التي بداخلها؟")) return;
+  state.library.splice(idx, 1);
+  saveLibrary();
+  renderLibrary();
 }
 
-function addQuestion() {
-  const catIdx = document.getElementById('select-cat').value;
-  const a = document.getElementById('new-qa').value.trim();
-  const b = document.getElementById('new-qb').value.trim();
+function addQuestionToCategory() {
+  const selectIdx = document.getElementById('select-category-target').value;
+  const input = document.getElementById('new-question-text');
+  const qText = input.value.trim();
   
-  if (catIdx === "" || catIdx === null) { alert('يرجى إنشاء فئة أولاً واختيارها!'); return; }
-  if (!a || !b) { alert('يرجى ملء كلا السؤالين (عاديين وإمبوستر)!'); return; }
+  if (selectIdx === "" || !state.library[selectIdx]) { alert('يرجى اختيار فئة أولاً!'); return; }
+  if (!qText) { alert('يرجى كتابة السؤال!'); return; }
   
-  state.categories[catIdx].pairs.push({ a, b });
+  state.library[selectIdx].questions.push(qText);
   saveLibrary();
-  
-  document.getElementById('new-qa').value = '';
-  document.getElementById('new-qb').value = '';
+  input.value = '';
   renderLibrary();
 }
 
 function deleteQuestion(catIdx, qIdx) {
-  state.categories[catIdx].pairs.splice(qIdx, 1);
+  state.library[catIdx].questions.splice(qIdx, 1);
   saveLibrary();
   renderLibrary();
 }
 
-// ══ IMPORT / EXPORT FUNCTIONS ══
+// ══ IMPORT & EXPORT ══
 function exportLibrary() {
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state.categories, null, 2));
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state.library, null, 2));
   const downloadAnchor = document.createElement('a');
   downloadAnchor.setAttribute("href", dataStr);
-  downloadAnchor.setAttribute("download", "imposter_questions_library.json");
+  downloadAnchor.setAttribute("download", "imposter_library.json");
   document.body.appendChild(downloadAnchor);
   downloadAnchor.click();
   downloadAnchor.remove();
 }
 
 function importLibrary(event) {
-  const input = event.target;
-  if (!input.files.length) return;
+  const file = event.target.files[0];
+  if (!file) return;
   
   const reader = new FileReader();
-  reader.onload = function() {
+  reader.onload = function(e) {
     try {
-      const importedData = JSON.parse(reader.result);
+      const importedData = JSON.parse(e.target.result);
       
-      // Validation check for array structure
-      if (!Array.isArray(importedData) || (importedData.length > 0 && (!importedData[0].name || !Array.isArray(importedData[0].pairs)))) {
-        throw new Error("بنية الملف غير متوافقة مع نظام الفئات الجديد.");
-      }
-      
-      if (confirm('تنبيه: الاستيراد سيستبدل جميع الفئات والأسئلة الحالية. هل تود المتابعة؟')) {
-        state.categories = importedData;
+      // تحقق بسيط من صحة الهيكل المستورد
+      if (Array.isArray(importedData) && importedData.every(item => item.category && Array.isArray(item.questions))) {
+        state.library = importedData;
         saveLibrary();
         renderLibrary();
-        alert('تم استيراد المكتبة بنجاح!');
+        alert('تم استيراد مكتبة الأسئلة بنجاح!');
+      } else {
+        alert('الملف غير متوافق مع صيغة مكتبة لعبة الإمبوستر الحالية.');
       }
-    } catch (e) {
-      alert('خطأ في قراءة وتوافق الملف: ' + e.message);
+    } catch (err) {
+      alert('فشل قراءة الملف، تأكد من اختيار ملف JSON صحيح.');
     }
   };
-  reader.readAsText(input.files[0]);
-  input.value = ''; // Reset input element
+  reader.readAsText(file);
 }
 
 // ══ PLAYERS ══
@@ -743,31 +713,35 @@ function removePlayer(i) {
   renderPlayerList();
 }
 
-// ══ GAME START ══
+// ══ GAME START & ADVANCED ROUND LOGIC ══
 function startGame() {
-  // Check if we have active questions to avoid crash
-  const validCategories = state.categories.filter(c => c.pairs.length > 0);
-  if (validCategories.length === 0) {
-    alert('تنبيه: لا توجد فئات تحتوي على أسئلة! اذهب لمكتبة الأسئلة وأضف أسئلة أولاً لتتمكن من اللعب.');
-    return;
-  }
-
   state.players.forEach(p => { if (!(p in state.scores)) state.scores[p] = 0; });
   startRound();
 }
 
 function startRound() {
+  // فحص توفر الفئات التي تحتوي على الأقل سؤالين عشوائيين للاختيار بينهما
+  const validCategories = state.library.filter(c => c.questions.length >= 2);
+  
+  if (validCategories.length === 0) {
+    alert("خطأ: يجب أن تمتلك فئة واحدة على الأقل تحتوي على (سؤالين) لكي تتمكن اللعبة من اختيار سؤال للمواطن وسؤال للإمبوستر! توجه للمكتبة وجهز فئاتك.");
+    showScreen('screen-library');
+    return;
+  }
+
   const n = state.players.length;
   state.imposterIdx = Math.floor(Math.random() * n);
   
-  // Pick a random category that has questions
-  const validCategories = state.categories.filter(c => c.pairs.length > 0);
-  const selectedCat = validCategories[Math.floor(Math.random() * validCategories.length)];
+  // 1. اختيار فئة عشوائية
+  const chosenCat = validCategories[Math.floor(Math.random() * validCategories.length)];
+  state.currentCategoryName = chosenCat.category;
   
-  state.currentCategoryName = selectedCat.name;
-  state.currentQPair = selectedCat.pairs[Math.floor(Math.random() * selectedCat.pairs.length)];
-  
-  // shuffle pass order
+  // 2. اختيار سؤالين عشوائيين ومختلفين من نفس الفئة
+  const shuffledQuestions = shuffle([...chosenCat.questions]);
+  state.questionNormal = shuffledQuestions[0];
+  state.questionImposter = shuffledQuestions[1];
+
+  // إعداد بقية الجولة
   state.passOrder = shuffle([...Array(n).keys()]);
   state.passIdx = 0;
   state.votes = {};
@@ -783,7 +757,11 @@ function showPassScreen() {
 function onReady() {
   const idx = state.passOrder[state.passIdx];
   const isImposter = idx === state.imposterIdx;
-  const q = isImposter ? state.currentQPair.b : state.currentQPair.a;
+  
+  // تخصيص السؤال بناءً على الهوية
+  const q = isImposter ? state.questionImposter : state.questionNormal;
+  
+  document.getElementById('current-cat-display').textContent = state.currentCategoryName;
   const qBox = document.getElementById('q-box');
   qBox.classList.remove('revealed');
   qBox.classList.add('hidden-q');
@@ -791,26 +769,28 @@ function onReady() {
   document.getElementById('q-next-btn').style.display = 'none';
   showScreen('screen-question');
 }
+
 function revealQuestion() {
   const qBox = document.getElementById('q-box');
   qBox.classList.add('revealed');
   qBox.classList.remove('hidden-q');
   document.getElementById('q-next-btn').style.display = 'block';
 }
+
 function nextAfterQuestion() {
   state.passIdx++;
   if (state.passIdx < state.passOrder.length) {
     showPassScreen();
   } else {
-    document.getElementById('discuss-cat-badge').textContent = "الفئة الحالية: " + state.currentCategoryName;
+    document.getElementById('discuss-cat-display').textContent = state.currentCategoryName;
     showScreen('screen-discuss');
   }
 }
 
 // ══ DISCUSS → REVEAL ══
 function showReveal() {
-  document.getElementById('reveal-qa').textContent = state.currentQPair.a;
-  document.getElementById('reveal-qb').textContent = state.currentQPair.b;
+  document.getElementById('reveal-qa').textContent = state.questionNormal;
+  document.getElementById('reveal-qb').textContent = state.questionImposter;
   showScreen('screen-reveal');
 }
 
@@ -888,7 +868,6 @@ function calcResults() {
     outBox.className = 'outcome-box outcome-fail';
     outBox.textContent = `❌ فاز الإمبوستر! لم يحصّل الفريق أغلبية الأصوات.`;
   }
-  
   const sorted = [...state.players].sort((a,b) => state.scores[b] - state.scores[a]);
   const tbody = document.getElementById('scores-body');
   tbody.innerHTML = sorted.map(p => {
