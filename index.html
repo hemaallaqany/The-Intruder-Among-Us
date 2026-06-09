@@ -911,8 +911,26 @@ function esc(s) {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js')
-        .then(reg => console.log('Service Worker Registered!', reg))
-        .catch(err => console.log('Service Worker Reg Failed:', err));
+        .then(reg => {
+          console.log('Service Worker المطور يعمل بنجاح!');
+          
+          // فحص التحديثات في الخلفية عند فتح اللعبة
+          reg.update();
+          
+          reg.onupdatefound = () => {
+            const installingWorker = reg.installing;
+            if (installingWorker) {
+              installingWorker.onstatechange = () => {
+                if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // تنبيه المستخدم بوجود تحديث جديد وإعادة تحميل الصفحة لتطبيقه
+                  alert('هناك تحديث جديد متوفر للعبة! سيتم تحديث الصفحة الآن تلقائياً.');
+                  window.location.reload();
+                }
+              };
+            }
+          };
+        })
+        .catch(err => console.log('فشل تسجيل الـ Worker:', err));
     });
   }
 </script>
