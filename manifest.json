@@ -1,24 +1,24 @@
 {
   "name": "الإمبوستر - النسخة المتقدمة",
   "short_name": "الإمبوستر",
-  "description": "لعبة الذكاء والخداع الاجتماعية",
-  "start_url": "./index.html",
+  "description": "لعبة صيد الجاسوس والإمبوستر الجماعية والممتعة",
+  "start_url": "./game phone.html",
   "display": "standalone",
   "background_color": "#0a0a12",
   "theme_color": "#0a0a12",
-  "orientation": "portrait",
-  "dir": "rtl",
-  "lang": "ar",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "./icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "./icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
