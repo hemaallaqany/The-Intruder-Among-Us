@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
-<title>الإمبوستر - النسخة المتقدمة</title>
+<title>بيننا دخيل</title>
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#0a0a12">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎭</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght=400;600;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -488,8 +489,8 @@
     <div class="card" style="justify-content: center;">
       <div style="text-align:center;">
         <div style="font-size:3.5rem; margin-bottom:12px;">🎭</div>
-        <div class="game-title">الإمبوستر</div>
-        <div class="game-subtitle">من فيكم يختبئ بيننا؟</div>
+        <div class="game-title">بيننا دخيل</div>
+        <div class="game-subtitle">اللعبة من فكرة وتصميم: فريق الرنجالة</div>
       </div>
       <button class="btn btn-primary" onclick="showScreen('screen-players')">بدء اللعبة</button>
       <button class="btn btn-secondary btn-gap" onclick="showScreen('screen-library')">📚 مكتبة الفئات والأسئلة</button>
@@ -603,7 +604,7 @@
       </div>
       
       <div class="q-reveal-row imposter">
-        <div class="q-reveal-label">🔴 سؤال الإمبوستر</div>
+        <div class="q-reveal-label">🔴 سؤال الدخيل</div>
         <div class="q-reveal-text" id="reveal-qb">—</div>
       </div>
       
@@ -626,7 +627,7 @@
   <div id="screen-vote" class="screen">
     <div class="card">
       <div style="text-align:center; color:var(--muted); font-size:0.9rem; margin-bottom:14px; flex-shrink:0;">
-        من هو الإمبوستر برأيك؟ 🤔
+        من هو الدخيل برأيك؟ 🤔
       </div>
       
       <div class="scrollable-content">
@@ -643,7 +644,7 @@
       <h2>النتائج</h2>
       
       <div class="imposter-reveal">
-        <div class="label">الإمبوستر كان...</div>
+        <div class="label">الدخيل كان...</div>
         <div class="name" id="result-imposter">—</div>
       </div>
       
@@ -926,7 +927,7 @@ function importLibrary(event) {
         renderLibrary();
         customAlert('تم استيراد مكتبة الأسئلة بنجاح!', '✅');
       } else {
-        customAlert('الملف غير متوافق مع صيغة لعبة الإمبوستر.', '❌');
+        customAlert('الملف غير متوافق مع صيغة لعبة بيننا دخيل.', '❌');
       }
     } catch (err) {
       customAlert('فشل قراءة الملف، تأكد من اختيار ملف JSON صحيح.', '❌');
@@ -971,7 +972,7 @@ function startGame() {
 function startRound() {
   const validCategories = state.library.filter(c => c.questions.length >= 2);
   if (validCategories.length === 0) {
-    customAlert("يجب أن تحتوي فئة واحدة على الأقل على (سؤالين) لكي تتمكن اللعبة من توزيع الأسئلة بشكل عادل بين المواطن والإمبوستر! توجه للمكتبة الآن.", "⚠️");
+    customAlert("يجب أن تحتوي فئة واحدة على الأقل على (سؤالين) لكي تتمكن اللعبة من توزيع الأسئلة بشكل عادل بين اللاعبين والدخيل! توجه للمكتبة الآن.", "⚠️");
     showScreen('screen-library');
     return;
   }
@@ -1110,7 +1111,7 @@ function calcResults() {
   } else {
     document.getElementById('result-emoji').textContent = '😈';
     outBox.className = 'outcome-box outcome-fail';
-    outBox.textContent = `❌ فاز الإمبوستر! لم يحصّل الفريق أغلبية الأصوات.`;
+    outBox.textContent = `❌ فاز الدخيل! لم يحصّل الفريق أغلبية الأصوات.`;
   }
   
   const sorted = [...state.players].sort((a,b) => state.scores[b] - state.scores[a]);
