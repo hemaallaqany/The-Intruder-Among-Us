@@ -2,7 +2,7 @@
   "name": "الإمبوستر - النسخة المتقدمة",
   "short_name": "الإمبوستر",
   "description": "لعبة صيد الجاسوس والإمبوستر الجماعية والممتعة",
-  "start_url": "./game phone.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0a0a12",
   "theme_color": "#0a0a12",

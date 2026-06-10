@@ -1,10 +1,9 @@
-const CACHE_NAME = 'imposter-game-v3';
+const CACHE_NAME = 'imposter-game-v4';
 const ASSETS = [
   './',
-  './game phone.html',
+  './index.html',
   './manifest.json',
   './icon-192.png',
-  './icon-512.png',
   'https://fonts.googleapis.com/css2?family=Cairo:wght=400;600;700;900&display=swap'
 ];
 
@@ -42,7 +41,7 @@ self.addEventListener('fetch', event => {
     }).catch(() => {
       // إذا فشل الجلب تماماً وكان الطلب لصفحة HTML
       if (event.request.headers.get('accept').includes('text/html')) {
-        return caches.match('./game phone.html');
+        return caches.match('./index.html');
       }
     })
   );
