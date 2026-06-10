@@ -1,4 +1,4 @@
-# 🎭 بيننا دخيل | An Intruder Among Us
+# 🎭 بيننا دخيل | The Intruder Among Us
 
 لعبة ذكاء اجتماعي ونقاشات ممتعة مصممة للهواتف الذكية والمتصفحات، تعتمد على الشك، الخداع، والتحقيق بين اللاعبين لمعرفة من هو "الدخيل". اللعبة من فكرة وتصميم **فريق الرنجالة**.
 
@@ -35,9 +35,9 @@
 
 ---
 
-# 🎭 An Intruder Among Us
+# 🎭 The Intruder Among Us
 
-A thrilling social deduction and discussion party game designed for smartphones and browsers. It relies on suspicion, deception, and investigation among players to uncover the "Intruder". Concept and design by **Al-Ranjala Team**.
+A thrilling social deduction and discussion party game designed for smartphones and browsers. It relies on suspicion, deception, and investigation among players to uncover the "Intruder". Concept and design by **El-Rengala Team**.
 
 ## 📺 About The Game
 **"An Intruder Among Us"** is a local party game played on a single device passed around between players. The game assigns secret, disguised questions from a specific category; normal players get one question, while the "Intruder" gets a completely different one without knowing it! After revealing the questions, the debate begins, ending with a secret voting phase to expose the intruder.
